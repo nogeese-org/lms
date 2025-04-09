@@ -1,2 +1,2 @@
 # Logical Media System
-!(LMS)[LMS.png]
+![raw.githubusercontent.com/nogeese-org/lms/main/LMS.png]
