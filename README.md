@@ -70,5 +70,5 @@ Stay tuned for formatting tools, bootloader integration, and more.
 
 ## 📜 License
 
-[NPL 1.0](LICENSE.md)
+[NPL 1.0](LICENSE)
 
