@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# mkfs.lms - Format a disk with Logical Media System (LMS)
+# Usage: sudo mkfs.lms /dev/sdX
+
+DEVICE=$1
+
+# Check if the device is an NVMe drive
+if ls /dev/nvme* | grep -q "^/dev/${DEVICE}"; then
+  # If it's an NVMe drive, use p1 and p2 partitions
+  PARTMASTER="${DEVICE}p1"  # Master partition (lms_partmaster)
+  PARTITION="${DEVICE}p2"   # Standard partition (lms_part)
+else
+  # If it's not an NVMe drive, use 1 and 2 as partition suffixes
+  PARTMASTER="${DEVICE}1"   # Master partition (lms_partmaster)
+  PARTITION="${DEVICE}2"    # Standard partition (lms_part)
+fi
+
+if [ -z "$DEVICE" ]; then
+  echo "Usage: $0 /dev/sdX"
+  exit 1
+fi
+
+echo "Formatting disk $DEVICE with LMS structure..."
+
+# Step 1: Create GPT partitions (Master partition and standard partition)
+parted $DEVICE mklabel gpt
+parted $DEVICE mkpart primary ext4 0% 50%
+parted $DEVICE mkpart primary ext4 50% 100%
+
+# Step 2: Create filesystem on the partitions
+mkfs.ext4 $PARTMASTER
+mkfs.ext4 $PARTITION
+
+# Step 3: Create LMS directories and mount points
+mount $PARTMASTER /mnt
+
+mkdir -p /mnt/! /mnt/root
+mkdir -p /mnt/@root /mnt/@boot
+touch /mnt/@root/root.json
+touch /mnt/@boot/boot.json
+
+# Create placeholder directories for metadata and logical volume references
+mkdir -p /mnt/!/info /mnt/!/branches /mnt/!/parts /mnt/!/data
+
+echo "LMS disk formatted. Master partition and logical partitions created."
+
+# Cleanup and unmount
+umount /mnt
