@@ -63,8 +63,13 @@ LMS
 
 ## 🚧 Status
 
-This project is in early development and the structure is subject to change.  
-Stay tuned for formatting tools, bootloader integration, and more.
+This project is in **early development**, and the structure may evolve over time.  
+Stay tuned for:
+
+- 📦 Formatting tools  
+- 🧰 Bootloader integration  
+- 🧪 Testing utilities
+
 
 ---
 
